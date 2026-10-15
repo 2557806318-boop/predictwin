@@ -1,4 +1,4 @@
-# Prediction Market Research Framework
+# PredictWin · 胜势预测
 
 ### 预测市场量化研究框架 · 行情驱动 · 可插拔策略 · 纸盘与延迟审计
 
@@ -33,8 +33,8 @@
 需要 **Node.js 24+** 和 Git。使用 Node 内置 SQLite；部分 Node 版本可能显示 SQLite 实验性提示。没有第三方运行时依赖，不需要 API Key。
 
 ```bash
-git clone https://github.com/2557806318-boop/prediction-market-research-framework.git
-cd prediction-market-research-framework
+git clone https://github.com/2557806318-boop/predictwin.git
+cd predictwin
 npm test
 npm start
 ```

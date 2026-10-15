@@ -1,8 +1,8 @@
 {
-  "name": "prediction-market-research-framework",
+  "name": "predictwin",
   "version": "1.0.0",
   "private": true,
-  "description": "Sanitized, paper-only prediction-market research framework with pluggable strategies and persistent latency audit.",
+  "description": "PredictWin | 胜势预测 — a sanitized, paper-only prediction-market research framework with pluggable strategies and persistent latency audit.",
   "type": "module",
   "engines": { "node": ">=24.0.0" },
   "scripts": {
