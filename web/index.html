@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prediction Research · Synthetic Demo</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#0b1324;color:#dbe6f6}body{max-width:1000px;margin:40px auto;padding:0 24px}h1{font-size:30px}p{color:#a9bad0;line-height:1.7}.tag{color:#63dfbd;letter-spacing:.15em;font-size:12px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}.card{background:#152139;padding:20px;border:1px solid #294060;border-radius:12px}.label{color:#a9bad0;font-size:13px}.value{font-size:28px;margin-top:10px}table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14px}td,th{text-align:left;padding:10px;border-bottom:1px solid #294060}pre{white-space:pre-wrap;overflow-wrap:anywhere;color:#b6d9ed}section{margin-top:30px}a{color:#63dfbd}.notice{border-left:3px solid #e9bc71;padding-left:16px}#connection{color:#e9bc71}caption{text-align:left;color:#a9bad0;padding:12px 0}
+</style>
+<header><div class="tag">PAPER ONLY / SYNTHETIC DATA</div><h1>预测市场研究框架</h1><p>行情 → 特征 → 自定义策略 → 报价校验 → 纸盘 → 审计。此页面没有真实账户、真实收益或实盘入口。</p></header>
+<p class="notice">策略实现已留空。零成交是默认安全行为，不是断线。前端每 2 秒刷新；后台每 100ms 评估。</p>
+<p id="connection" role="status">正在连接本地演示…</p>
+<div class="grid"><div class="card"><div class="label">纸盘可用现金（合成单位）</div><div id="cash" class="value">—</div></div><div class="card"><div class="label">已处理合成行情</div><div id="ticks" class="value">—</div></div><div class="card"><div class="label">纸盘成交数</div><div id="trades" class="value">—</div></div></div>
+<section><h2>最新决策</h2><pre class="card" id="decision">等待数据</pre></section>
+<section><h2>持久化延迟 / ms</h2><table><caption>最多最近 10,000 条样本；演示耗时不代表交易所 RTT。各分位数不能直接相加。</caption><thead><tr><th>环节</th><th>样本数</th><th>p50</th><th>p95</th><th>p99</th></tr></thead><tbody id="latency"></tbody></table></section>
+<section><h2>只读 API</h2><p><a href="/api/status">状态</a> · <a href="/api/latency">延迟</a> · <a href="/api/paper-trades">纸盘记录</a> · <a href="/api/events">审计事件</a></p></section>
+<script>
+const el=id=>document.getElementById(id);
+async function refresh(){
+ try{
+  const read=async path=>{const r=await fetch(path,{signal:AbortSignal.timeout(3000)});if(!r.ok)throw Error();return r.json()};
+  const [s,l]=await Promise.all([read('/api/status'),read('/api/latency')]);
+  el('connection').textContent='本地演示在线 · '+new Date().toLocaleTimeString();
+  el('cash').textContent=s.availableCash;el('ticks').textContent=s.ticks;el('trades').textContent=s.trades;
+  el('decision').textContent=JSON.stringify(s.lastDecision,null,2);
+  el('latency').replaceChildren();
+  for(const [name,m] of Object.entries(l.metrics)){const row=document.createElement('tr');for(const value of [name,m.count,...[m.p50,m.p95,m.p99].map(x=>x===null?'—':x.toFixed(3))]){const cell=document.createElement('td');cell.textContent=value;row.append(cell)}el('latency').append(row)}
+ }catch{el('connection').textContent='本地服务暂不可达，请检查终端。'}
+ setTimeout(refresh,2000);
+}refresh();
+</script>
+</html>
